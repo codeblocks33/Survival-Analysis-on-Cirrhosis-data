@@ -1,0 +1,594 @@
+---
+title: "EAS509 Exam 2"
+author: "Abhinav Reddy Chintalapuri"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+Submit your answers as a single pdf attach all R code. Failure to do so will result in grade reduction.
+
+The exam must be done individually, with no discussion or help with others. Breaking this rule will result in an automatic 0 grade.
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tibble)
+library(dplyr)
+library(tidyr)
+library(rlang)
+library(smooth)
+library(readr)
+library(lubridate)
+library(ggplot2)
+library(tidyverse)
+library(forecast)
+library(gridExtra)
+library(fpp2)
+library(stats)
+library(seasonal)
+library(zoo)
+library(rio)
+library(urca)
+library(fpp)
+library(MASS)
+library(Ecdat)
+library(ggfortify)
+library(cowplot)
+library(fBasics)
+library(zoo)
+library(tsibble)
+library(fable)
+library(fabletools)
+library(feasts)
+library(tsibbledata)
+
+```
+
+
+# Part A (30 points) - each question worth 1 points
+
+Some questions have multiple answers
+
+1.	Which simple forecasting method says the forecast is equal to the mean of the historical data?
+a.	Average Method
+b.	Naïve Method
+c.	Seasonal Naïve Method
+d.	Drift Method
+
+**Answer: ** A : Average Method
+
+2.	Which simple forecasting method says the forecast is equal to the last observed value?
+a.	Average Method
+b.	Naïve Method
+c.	Seasonal Naïve Method
+d.	Drift Method
+
+**Answer: **B : Naive Method
+
+3.	Which simple forecasting method is equivalent to extrapolating a line draw between the first and lost observations?
+a.	Average Method
+b.	Naïve Method
+c.	Seasonal Naïve Method
+d.	Drift Method
+
+**Answer: D** 
+
+4.	Which of the following is an assumption made about forecasting residuals during point forecast?
+a.	Residuals are normally distributed
+b.	Residuals are uncorrelated
+c.	Residuals have constant variance
+d.	None of the above
+
+**Answer:B **
+
+5.	Which of the following is an assumption made about forecasting residuals during interval forecasting? (multiple answers)
+a.	Residuals have mean zero
+b.	Residuals are normally distributed
+c.	Residuals have constant variance
+d.	None of the above
+
+**Answer: A,B,C ** all should present for full score :
+
+6.	What is the consequence of forecasting residuals that are not uncorrelated?
+a.	Prediction intervals are difficult to calculate
+b.	Information is left in the residuals that should be used
+c.	Forecasts are biased
+d.	None of the above
+
+**Answer:B **
+
+7.	What is the consequence of forecasting residuals that don’t have mean zero?
+a.	Prediction intervals are difficult to calculate
+b.	Information is left in the residuals that should be used
+c.	Forecasts are biased
+d.	None of the above
+
+**Answer:C **
+
+8.	Which measure of forecast accuracy is scale independent?
+a.	MAE
+b.	MSE
+c.	RMSE
+d.	MAPE
+
+**Answer:D **
+
+9.	Calculation of forecasts is based on what?
+a.	Test set
+b.	Training set
+c.	Both
+d.	Neither
+
+**Answer:B **
+
+10.	Forecast accuracy is based on what?
+a.	Test set
+b.	Training set
+c.	Both
+d.	Neeither
+
+**Answer: A**
+
+11.	A series that is influenced by seasonal factors is known as what?
+a.	Trend
+b.	Seasonal
+c.	Cyclical
+d.	White Noise
+
+**Answer:B **
+
+12.	Data that exhibits rises and falls that are not of a fixed period is known as what?
+a.	Trend
+b.	Seasonal
+c.	Cyclical
+d.	White Noise
+
+**Answer:C **
+
+13.	Data that is uncorrelated over time is known as what?
+a.	Trend
+b.	Seasonal
+c.	Cyclical
+d.	White Noise
+
+**Answer:D**
+
+14.	Which of the following time series decomposition models is appropriate when the magnitude of the seasonal fluctuations are not proportional to the level?
+a.	Additive
+b.	Multiplicative
+c.	Both
+d.	Neither
+
+**Answer:B **
+
+15.	Which of the following time series decomposition models is appropriate when the magnitude of the seasonal fluctuations are proportional to the level?
+a.	Additive
+b.	Multiplicative
+c.	Both
+d.	Neither
+
+**Answer:B **
+
+
+Exhibit 1
+![Figure1](Fig1.png)
+
+16.	Refer to Exhibit 1. Line A is which simple forecasting method?
+a.	Average Method
+b.	Naïve Method
+c.	Seasonal Naïve Method
+d.	Drift 
+
+**Answer:B **
+
+17.	Refer to Exhibit 1. Line B is which simple forecasting method?
+a.	Average Method
+b.	Naïve Method
+c.	Seasonal Naïve Method
+d.	Drift Method
+
+**Answer:A **
+
+18.	Refer to Exhibit 1. Line C is which simple forecasting method?
+a.	Average Method
+b.	Naïve Method
+c.	Seasonal Naïve Method
+d.	Drift Method
+
+**Answer:C **
+
+Exhibit 2
+![Figure2](Fig2.png)
+
+19.	Refer to Exhibit 2. Line A is which simple forecasting method?
+a.	Average Method
+b.	Naïve Method
+c.	Seasonal Naïve Method
+d.	Drift Method
+
+**Answer: D**
+
+20.	Refer to Exhibit 2. Line B is which simple forecasting method?
+a.	Average Method
+b.	Naïve Method
+c.	Seasonal Naïve Method
+d.	Drift Method
+
+**Answer:B **
+
+21.	Refer to Exhibit 2. Line C is which simple forecasting method?
+a.	Average Method
+b.	Naïve Method
+c.	Seasonal Naïve Method
+d.	Drift Method
+
+**Answer: A**
+
+
+Exhibit 3
+![Figure3](Fig3.png)
+
+22.	Refer to Exhibit 3. The peaks are in which quarter?
+a.	Quarter 1
+b.	Quarter 2
+c.	Quarter 3
+d.	Quarter 4
+
+**Answer: D**
+
+23.	Refer to Exhibit 3. The trough are in which quarter?
+a.	Quarter 1
+b.	Quarter 2
+c.	Quarter 3
+d.	Quarter 4
+
+**Answer:B ** 
+
+Exhibit 4
+![Figure4](Fig4.png)
+
+24.	Refer to Exhibit 4. The peaks are in which quarter?
+a.	Quarter 1
+b.	Quarter 2
+c.	Quarter 3
+d.	Quarter 4
+
+**Answer:D**
+
+25.	Refer to Exhibit 4. The trough are in which quarter?
+a.	Quarter 1
+b.	Quarter 2
+c.	Quarter 3
+d.	Quarter 4
+
+**Answer:B **
+
+26.	Refer to Exhibit 4. In which quarter is there a decline in the seasonal affect?
+a.	Quarter 1
+b.	Quarter 2
+c.	Quarter 3
+d.	Quarter 4
+
+**Answer:D**
+
+
+Figure 5
+
+| Year 1 |    |    |    | Year 2 |    |    |    |
+|--------|----|----|----|--------|----|----|----|
+| Q1     | Q2 | Q3 | Q4 | Q1     | Q2 | Q3 | Q4 |
+| 10     | 6  | 8  | 12 | 11     | 7  | 9  | 13 |
+
+
+27.	Refer to Figure 5. Using the average method, what is the forecast of Quarter 2 of Year 3? (Don’t use a calculator.)
+a.	7
+b.	9.5
+c.	13.85
+d.	13
+
+**Answer: B**
+
+28.	Refer to Figure 5. Using the naïve method, what is the forecast of Quarter 2 of Year 3? (Don’t use a calculator.)
+a.	7
+b.	9.5
+c.	13.85
+d.	13
+
+**Answer:D **
+
+29.	Refer to Figure 5. Using the seasonal naïve method, what is the forecast of Quarter 2 of Year 3? (Don’t use a calculator.)
+a.	7
+b.	9.5
+c.	13.85
+d.	13
+
+**Answer:A **
+
+30.	Refer to Figure 5. Using the drift method, what is the forecast of Quarter 2 of Year 3? (Don’t use a calculator.)
+a.	7
+b.	9.5
+c.	13.85
+d.	13
+
+**Answer: C**
+
+# Part B (30 points)
+Choose a series from us_employment.cvs, the total employment in leisure and hospitality industry in the United States (see, title column).
+```{r}
+df<-read.csv("us_employment.csv")
+head(df)
+```
+```{r}
+#usemp[!duplicated(usemp$Month), ]
+```
+```{r}
+
+df_sub<- df%>%subset.data.frame(Title == "Leisure and Hospitality") 
+usemp <- df_sub %>% mutate(Month=yearmonth(Month))%>% as_tsibble(index=Month)
+head(usemp)
+```
+
+
+a. Produce an STL decomposition of the data and describe the trend and seasonality. (4 points)
+```{r}
+usemp %>%
+  model(STL(Employed ~ season(window = 12) + trend(window = 6), robust = TRUE)) %>%
+  components() %>%
+  autoplot() +
+  labs(title = "STL decomposition: US Leisure and Hospitality employment")
+```
+*Answer*: We can notice that the trend gradually increased from 1940 through late 1980's , after that the number of employed were fluctuating but the trend is upwards.
+
+b. Do the data need transforming? If so, find a suitable transformation.(4 points)
+```{r}
+usemp %>% features(Employed, features = guerrero)
+usemp %>% mutate(emp_trans=box_cox(Employed,-0.2164)) %>%
+  autoplot(emp_trans)
+```
+*Answer* The data need transforming as the variance is not constant, the lambda of -0.216 will equalize the variance.
+
+c. Are the data stationary? If not, find an appropriate differencing which yields stationary data.(4 points)
+```{r}
+usemp %>% features(box_cox(Employed,-0.2164),unitroot_kpss)
+```
+**Answer**: The data is not stationary as the p value is 0.01 according to kpss test.
+```{r}
+usemp %>% features(box_cox(Employed,-0.2164),unitroot_nsdiffs)
+# one seasonal difference observed by nsdiff test
+```
+```{r}
+usemp %>% features(difference(box_cox(Employed,-0.2164),12),unitroot_kpss)
+usemp %>% features(difference(box_cox(Employed,-0.2164),12),unitroot_ndiffs)
+#one regular difference observed
+```
+```{r}
+usemp %>% features(difference(difference(box_cox(Employed,-0.2164),12),1),unitroot_kpss)
+```
+**Answer**: The data is not stationary and seasonal according to the kpss test, so one regular and one seasonal differencing is required.
+
+d. Identify a couple of ARIMA models that might be useful in describing the time series. Which of your models is the best according to their AICc values?(5 points)
+```{r}
+gg_tsdisplay(usemp,difference(difference(box_cox(Employed,-0.2164),12),1),plot_type = 'partial')
+```
+```{r}
+fit_arima <- usemp %>%
+  model(
+    arima_auto = ARIMA(box_cox(Employed,-0.2164)),
+    arima = ARIMA(box_cox(Employed,-0.2164)~0+pdq(2,1,1)+PDQ(2,1,0))
+    )
+accuracy(fit_arima)
+```
+```{r}
+report(fit_arima[1])
+```
+```{r}
+report(fit_arima[2])
+```
+```{r}
+report(fit_arima)
+```
+*Answer*: The automatic arima model performed better than the seasonal arima according to the AICc values.
+
+e. Estimate the parameters of your best model and do diagnostic testing on the residuals. Do the residuals resemble white noise? If not, try to find another ARIMA model which fits better.(5 points)
+```{r}
+report(fit_arima[1])
+
+gg_tsresiduals(fit_arima[1])
+```
+```{r}
+augment(fit_arima[1])%>%
+  features(.resid,ljung_box,lag=12,dof=6)
+```
+*Answer*: The residual test on the best fit arima model yielded results with ljung box test p value of 0, we can say that the residuals are independent as the null hypothesis is rejected.
+
+f. Forecast the next 3 years of data. Get the latest figures from https://fred.stlouisfed.org/categories/11 to check the accuracy of your forecasts. (5 points)
+```{r}
+usfc<-read.csv("USLAH.csv")
+
+usfc %>% 
+  rename(
+    Employed = USLAH
+    )->fc_df
+
+
+head(fc_df)
+```
+```{r}
+#formatting data for time series
+fcdata <- fc_df %>% mutate(DATE=ymd(DATE))%>% as_tsibble(index=DATE)
+head(fcdata)
+
+```
+```{r}
+#filtering the required data
+fc_filter <- fcdata %>% filter(DATE > ymd("2019-11-01"))
+head(fc_filter)
+h<-nrow(fc_filter)
+print(h)
+```
+
+
+
+```{r}
+#Forecast Accuracy
+forecast_us<-forecast(fit_arima[1],h=36)%>%as_tsibble(index=DATE)
+forecast_us
+
+```
+
+```{r}
+#Forecast Plot
+forecast_usemp<- forecast(fit_arima[1],h="3 years")
+autoplot(forecast_usemp)+autolayer(fc_filter)
+autoplot(forecast_usemp)+autolayer(fcdata)
+```
+
+g. Eventually, the prediction intervals are so wide that the forecasts are not particularly useful. How many years of forecasts do you think are sufficiently accurate to be usable? (3 points)
+**Answer**: There is a sharp decline in the early 2020 due to covid-19 pandemic, this is an unforeseen situation so any predictions made at this time does not matter. Later,when the pandemic got under control, then the trend is reliable and matching with the forecast. The forecasting is sufficient for the next 5 years.
+
+
+# Part C (40 points)
+##	Consider following transactions: (8 points)
+
+1.	Eggs, Bread, Milk, Bananas, Onion, Yogurt
+2.	Dill, Eggs, Bread, Bananas, Onion, Yogurt
+3.	Apple, Eggs, Bread, Milk
+4.	Corn, Bread, Milk, Teddy Bear, Yogurt
+5.	Corn, Eggs, Ice Cream, Bread, Onion
+
+## a)	Calculate by hand support, confidence and lift for following rules (without usage of apriory library, show your work) 
+
+### •	{Bananas} -> {Yogurt}     (2 points)
+
+N=5
+N_bananas = 2
+N_yogurt = 3
+N_bananas_yogurt = 2
+support  = 2/5 = 0.4
+confidence = 2/2 = 1
+support_yogurt = 3/5
+
+lift = 5/3 = 1.66
+
+
+### •	{Corn, Bread}->{Onion}     (3 points)
+
+N = 5
+N_onion = 3
+N_onion_corn_bread = 1
+N_corn_bread = 2
+Support = 1/5
+confidence = 1/2 = 0.5
+
+support_onion = 3/5 = 0.6
+
+lift = 0.5/0.6 = 0.833
+
+
+### •	{Bread}->{Milk, Yogurt}     (3 points)
+
+N = 5
+N_bread = 5
+N_milk_yogurt = 2
+N_milk_yogurt_bread = 2
+support = 2/5 = 0.4
+confidence = 2/5 = 0.4
+support_milk_yogurt = 2/5 = 0.4
+
+lift = 0.4/0.4 = 1
+
+
+
+
+# Part D (32 points)
+
+Online_Retail2.csv contains transaction from online store in long format (i.e. single item per line and lines with same InvoiceNo is single transaction).
+
+a)	Read data and convert it to transactions (hint: transactions function and format argument). (4 points)
+
+```{r,include=FALSE}
+library(tidyverse)
+library(arules)
+library(arulesViz)
+```
+```{r}
+tr<-read.csv("Online_Retail2.csv")
+head(tr)
+```
+
+```{r}
+
+tr$StockCode<-NULL
+trst<-transactions(tr,format="long")
+trst
+```
+
+b)	Run summary on transactions. How many transactions are there? How many unique items? (4 points)
+```{r}
+summary(trst)
+```
+
+c)	Inspect (with inspect) first three transactions. What items are in basket with transaction id 536366? (4 points)
+```{r}
+inspect(trst[1:3])
+```
+*Answer*:in transaction # id 536366,the items are:
+1.HAND WARMER RED POLKA DOT
+2.HAND WARMER UNION JACK  
+
+d)	Visualize top 10 frequent items. What is the most frequent? (4 points)
+```{r}
+itemFrequencyPlot(trst,topN = 10)
+```
+*Answer*:     WHITE HANGING HEART T-LIGHT HOLDER is the most frequent one.
+
+e)	We want to look at rule which would have at least 100 transactions. What support is corresponding to that? (4 points)
+```{r}
+rule_sup <- apriori(trst, parameter = list(target = 'frequent'))
+
+```
+
+Absolute minimum support count: 2444 
+
+```{r}
+2444/nrow(trst)
+```
+
+f)	Calculate rules with a rule. Use previously calculated support, confidence of 0.9 and maxlen of 4 (we are looking into the rules with up to 4 items). (4 points)
+
+```{r}
+rules <- apriori(trst, parameter = list(target = 'frequent', support = 0.004, confidence = 0.9, maxlen = 4))
+```
+```{r}
+length(rules)
+inspect(head(rules))
+quality(head(rules))
+```
+```{r}
+rules <- apriori(trst, parameter = list(support = 0.004, confidence = 0.9))
+length(rules)
+```
+
+g)	List top 10 by confidence. What is the sense of confidence (explain on example of the top rule)? (4 
+points)
+```{r}
+inspect(head(sort(rules,by='confidence'),n=10))
+
+```
+Confidence=P(B/A),It is the likelihood that B will happen if A happens.
+Therefore, the association between B and A is stronger the higher the confidence.
+
+
+h)	List top 10 by lift. What is the sense of lift (explain on example of the top rule)? (4 points)
+
+```{r}
+inspect(head(sort(rules,by='lift'),n=10))
+```
+Lift is essentially a metric for determining how dependent or independent the associations are. It calculates the ratio of confidence to expected confidence. Lift is the factor that makes the co-occurrence of A and B more likely than if they were independent. As a result, the likelihood of A and B occurring concurrently increases with lift.
+CHRISTMAS TREE DECORATION WITH BELL, CHRISTMAS TREE STAR DECORATION}       => {CHRISTMAS TREE HEART DECORATION}
+We can see from the above example, which has the highest lift, that there is a strong association. Customers who purchase a CHRISTMAS TREE DECORATION WITH BELL or a CHRISTMAS TREE STAR DECORATION are likely to purchase a CHRISTMAS TREE HEART DECORATION to complete their Christmas tree.
+
+
+
+
+
